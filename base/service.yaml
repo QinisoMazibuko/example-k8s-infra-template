@@ -1,0 +1,46 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines the Kubernetes Service for the application, enabling internal communication
+# between pods and external connectivity if necessary.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this Service file
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'template' in the 'metadata.name' and 'spec.selector.app' fields with your service name.
+# 2. Determine the appropriate Service type:
+#    - Use 'ClusterIP' (default) for internal communication.
+#    - Use 'LoadBalancer' or 'NodePort' if external access is required (e.g., bypassing Ingress).
+# 3. Update the 'ports' section:
+#    - Ensure 'port' matches the Service's exposed port.
+#    - Confirm 'targetPort' aligns with the container's port in the deployment.yaml.
+# 4. Delete unused sections (e.g., proxy configuration) if not required for your service.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: template
+spec:
+  type: ClusterIP
+  selector:
+    app: template
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: template-proxy
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app: template
+#   ports:
+#   - name: http-proxy
+#     protocol: TCP
+#     port: 80
+#     targetPort: http-proxy

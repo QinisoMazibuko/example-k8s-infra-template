@@ -1,0 +1,26 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines a PodDisruptionBudget (PDB) to ensure a minimum number of pods are always available
+# during voluntary disruptions (e.g., node maintenance, scaling events).
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this PodDisruptionBudget
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'template' in all occurrences with your service's name.
+# 2. Adjust 'minAvailable' or 'maxUnavailable' as per the service's availability requirements.
+#    - Use 'minAvailable' to specify the minimum number of pods that must remain available.
+#    - Use 'maxUnavailable' to specify the maximum number of pods that can be disrupted.
+# 3. Ensure the selector's matchLabels align with your service's Deployment or StatefulSet labels.
+# 4. Verify that the PDB settings suit your application's scaling and redundancy requirements.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: template
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: template

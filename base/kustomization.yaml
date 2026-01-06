@@ -1,0 +1,29 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines the base resources for the Kubernetes application deployment.
+# It includes the core manifests needed for a service or app to function in the cluster.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this Kustomization file
+#------------------------------------------------------------------------------------------------------
+# 1. Ensure all required resource files are included in the 'resources' section.
+# 2. Uncomment 'keda.yaml' if scaling based on custom metrics is required.
+# 3. Remove unused resources from the 'resources' list to avoid unnecessary deployments.
+# 4. Ensure all referenced files (e.g., secrets, ConfigMaps) are correctly defined and updated.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - configmap.yaml
+  - deployment.yaml
+  - external-secrets.yaml
+  - ingress.yaml
+  # - keda.yaml
+  - networkpolicy.yaml
+  - pdb.yaml
+  - post-sync-tests.yaml
+  - secret.yaml
+  - service.yaml

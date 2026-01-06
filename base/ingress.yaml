@@ -1,0 +1,49 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines the Ingress resource to expose the service externally using an ALB (AWS Application Load Balancer).
+# It also configures security (TLS) and authentication settings for access.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this Ingress file
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'template' in the 'metadata.name' and 'host' fields with the name of your service.
+# 2. Update the 'alb.ingress.kubernetes.io/certificate-arn' to match your service's TLS certificate.
+# 3. Verify the 'host' field under 'rules' reflects the correct domain/subdomain.
+# 4. If your service doesn't need Cognito authentication, remove related annotations (e.g., auth-type, auth-idp-cognito).
+# 5. Ensure the 'service.name' and 'service.port.name' match your service's Kubernetes configuration.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: template
+  annotations:
+    # General ALB configuration
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-2:7689..........:certificate/b24e4b00-e5fe-49a5-9ed2-e28b67da5e48
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/group.name: example
+    alb.ingress.kubernetes.io/group.order: "6"
+    alb.ingress.kubernetes.io/target-type: ip
+    # Redirect all HTTP traffic to HTTPS
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+  
+spec:
+  ingressClassName: alb
+  rules:
+    - host: template.dev.example.myawesomedomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: template
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - template.dev.example.myawesomedomain.com

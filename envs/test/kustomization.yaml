@@ -1,0 +1,55 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines the Kustomize overlays for the 'test' environment, customizing base resources.
+# It modifies configurations specific to the 'test' environment, such as the Ingress host and secrets.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this Kustomization overlay
+#------------------------------------------------------------------------------------------------------
+# 1. Verify the `namespace` field is correctly set for the deployment.
+# 2. Confirm the `newTag` matches the desired container image version for 'test'.
+# 3. Update the `patches` to accurately reflect environment-specific changes:
+#    - Ensure the `host` and `tls` entries match the domain for the 'test' environment.
+#    - Verify the `certificate-arn` references the correct AWS ACM certificate.
+# 4. Validate additional `configmap.yaml` and `external-secrets-keys.yaml` patches are correct.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: example
+nameSuffix: ""
+
+resources:
+  - ../../base
+  - serviceaccount.yaml
+  
+components:
+  - ../../variants/test
+
+images:
+  - name: 7689...........dkr.ecr.eu-west-2.amazonaws.com/example/template
+    newName: 7689...........dkr.ecr.eu-west-2.amazonaws.com/example/template
+    newTag: "0.0.1"
+
+patches:
+  - target:
+      kind: Ingress
+      name: template
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: template.test.example.myawesomedomain.com
+      - op: replace
+        path: /spec/tls/0/hosts
+        value: [template.test.example.myawesomedomain.com]
+      - op: replace
+        path: /metadata/annotations/alb.ingress.kubernetes.io~1certificate-arn
+        value: arn:aws:acm:eu-west-2:7689..........:certificate/7918b4ed-2d31-4c65-9e78-5c54425d6e72
+
+  - path: configmap.yaml
+  - path: external-secrets-keys.yaml
+    target:
+      kind: ExternalSecret
+      name: template

@@ -1,0 +1,18 @@
+# Exclude everything:
+*
+
+# Now un-exclude stuff we need
+!.git*
+!.github/*
+
+!base
+!base/**/
+!base/**/*.yaml
+
+!envs
+!envs/**/
+!envs/**/*.yaml
+
+!variants
+!variants/**/
+!variants/**/*.yaml

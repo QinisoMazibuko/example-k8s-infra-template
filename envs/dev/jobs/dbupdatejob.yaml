@@ -1,0 +1,51 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines a Kubernetes Job for updating the database or performing one-time tasks.
+# Jobs are suitable for operations that need to run to completion, like database updates or migrations.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this Job file
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'example-db-update' in 'metadata.name' with a name relevant to your task.
+# 2. Update the container image to the appropriate one for your use case.
+# 3. Customize the environment variables under 'env' for your application's configuration.
+# 4. Adjust 'restartPolicy' as needed (use 'Never' to prevent retries on failure).
+# 5. Set 'backoffLimit' to control the number of retry attempts.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: example-db-update
+  annotations:
+    argocd.argoproj.io/sync-options: Force=true,Replace=true
+spec:
+  template:
+    spec:
+      containers:
+        - name: db-update
+          image: 7689...........dkr.ecr.eu-west-2.amazonaws.com/example/populate-db:0.3.94
+          env:
+            - name: OPENSEARCH_HOSTS
+              value: "vpc-example-engine-oprjemd4rrfggghwxtfes7kg4nu.eu-west-2.es.amazonaws.com:443"
+            - name: OPENSEARCH_USE_SSL
+              value: "true"
+            - name: INDEX_ENV_PREFIX
+              value: "dev"
+            - name: OPENSEARCH_VERIFY_CERTS
+              value: "false"
+            - name: OPENSEARCH_DASHBOARDS_URL
+              value: "https://vpc-example-engine-oprjemd4rrfggghwxtfes7kg4nu.eu-west-2.es.amazonaws.com/_dashboards"
+            - name: OPENSEARCH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: template
+                  key: OPENSEARCH_USER
+            - name: OPENSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: template
+                  key: OPENSEARCH_PASSWORD
+      restartPolicy: Never
+  backoffLimit: 4

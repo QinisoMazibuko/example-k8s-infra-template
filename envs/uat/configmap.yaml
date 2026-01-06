@@ -1,0 +1,24 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This ConfigMap stores environment-specific, non-sensitive configurations for the 'uat' environment.
+# These configurations are injected into the application as environment variables.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this ConfigMap
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'template' in the 'metadata.name' field with the name of your service.
+# 2. Update 'example_ENV' to reflect the appropriate environment (e.g., uat).
+# 3. Provide the correct values for backend API URLs, OpenSearch hosts, and dashboards if applicable.
+# 4. Remove any unused fields to maintain clean and relevant configurations.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: template
+data:
+  example_API_ENV: uat
+  NEXT_PUBLIC_BACKEND_API_URL: ""
+  OPENSEARCH_HOSTS: ""
+  OPENSEARCH_DASHBOARDS_URL: ""

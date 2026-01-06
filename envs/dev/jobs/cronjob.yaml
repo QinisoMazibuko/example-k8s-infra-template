@@ -1,0 +1,37 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines a Kubernetes CronJob that runs periodically based on the specified schedule.
+# CronJobs are ideal for recurring tasks like health checks, data updates, or other periodic operations.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this CronJob file
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'test-openai-latency' in 'metadata.name' and 'metadata.labels.app' with your CronJob's name.
+# 2. Update the 'schedule' field to reflect the desired execution frequency (in Cron format).
+# 3. Customize the container image and 'args' section with the appropriate task logic.
+# 4. Adjust 'restartPolicy' as needed (common options: OnFailure or Never).
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: test-openai-latency
+  labels:
+    app: test-openai-latency
+spec:
+  schedule: "0 */4 * * *" # Runs every 4 hours
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: test-openai-latency
+              image: curlimages/curl:7.87.0 # Using a lightweight curl image
+              imagePullPolicy: IfNotPresent
+              args:
+                - "-s" # Silent mode
+                - "-X"
+                - "GET"
+                - "https://api.dev.example.myawesomedomain.com/api4/test-openai-latency"
+          restartPolicy: OnFailure

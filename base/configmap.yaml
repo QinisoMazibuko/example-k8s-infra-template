@@ -1,0 +1,22 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                             Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file provides application-specific environment configurations.
+# It is used to inject environment variables into pods or to store other non-sensitive configurations.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this ConfigMap
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'template' in the 'metadata.name' field with the name of your service.
+# 2. Update 'example_ENV' to reflect the appropriate environment (e.g., dev, test, prod).
+# 3. Add any additional configuration keys specific to your service.
+# 4. Remove unused fields or comments.
+#-------------------------------------------------------------------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: template
+data:
+  example_ENV: dev
+  NEXT_PUBLIC_BACKEND_API_URL: ""
+  OPENSEARCH_HOSTS: ""

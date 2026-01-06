@@ -1,0 +1,114 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines the deployment configuration for the Kubernetes service.
+# It specifies the pods, containers, resource allocations, and probes to ensure a stable deployment.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this Deployment file
+#------------------------------------------------------------------------------------------------------
+# 1. Replace all instances of 'template' with the name of your service.
+# 2. Update the `image` field with the correct image and version for your service.
+# 3. Adjust `replicas` based on the expected load and redundancy requirements.
+# 4. Ensure probes (`livenessProbe` and `readinessProbe`) match your application's health endpoints.
+# 5. Set resource `limits` and `requests` appropriately for your application.
+# 6. Remove or customize commented-out sections for additional configurations (e.g., proxy, volumes).
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: template
+  labels:
+    app.kubernetes.io/instance: template
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: template
+  template:
+    metadata:
+      labels:
+        app: template
+    spec:
+      priorityClassName: example-bc1
+      automountServiceAccountToken: false
+
+      topologySpreadConstexamplents:
+        - topologyKey: "topology.kubernetes.io/zone"
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: template
+          maxSkew: 1
+
+      containers:
+        - name: template
+          imagePullPolicy: Always
+          image: 7689...........dkr.ecr.eu-west-2.amazonaws.com/example/template:0.1.1
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+            runAsGroup: 1000
+            runAsUser: 1000
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8000
+
+          envFrom:
+            - configMapRef:
+                name: template
+            - secretRef:
+                name: template
+
+          # Adjust resource allocation to reasonable service requirements
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+              ephemeral-storage: "1Gi"
+            requests:
+              cpu: "0.1"
+              memory: "100Mi"
+              ephemeral-storage: "1Gi"
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+
+          # Uncomment and customize the proxy container if needed
+          # - name: template-proxy
+          #   imagePullPolicy: Always
+          #   image: nginx:1.27.0
+          #   ports:
+          #     - name: http-proxy
+          #       containerPort: 80
+
+      # Uncomment and customize the volumes if needed
+      # volumes:
+      # - name: pm2
+      #   emptyDir:
+      #     sizeLimit: 1Mi
+      # - name: template-proxy
+      #   configMap:
+      #     name: template-proxy

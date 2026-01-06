@@ -1,0 +1,41 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines an HTTPScaledObject for KEDA (Kubernetes Event-driven Autoscaling).
+# It dynamically scales the deployment based on HTTP request metrics, such as request rate.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this KEDA file
+#------------------------------------------------------------------------------------------------------
+# 1. Replace all occurrences of 'template' with your service's name.
+# 2. Update 'hosts' to include the correct domain(s) for your service.
+# 3. Verify 'pathPrefixes' to match the routes you want KEDA to monitor.
+# 4. Adjust 'replicas' values to define minimum and maximum scaling limits for your service.
+# 5. Ensure the scaling metric (e.g., request rate) aligns with your service's traffic patterns.
+# 6. Update 'port' to match the port your service is exposed on.
+#------------------------------------------------------------------------------------------------------
+
+kind: HTTPScaledObject
+apiVersion: http.keda.sh/v1alpha1
+metadata:
+  name: template
+spec:
+  hosts:
+    - template.dev.example.myawesomedomain.com
+  pathPrefixes:
+    - /
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: template
+    service: template
+    port: 80
+  replicas:
+    min: 2
+    max: 10
+  scaledownPeriod: 300
+  scalingMetric:
+    requestRate:
+      granularity: 1s
+      targetValue: 100
+      window: 1m

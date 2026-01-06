@@ -1,0 +1,37 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file configures the Kubernetes manifests for the 'dev' environment.
+# It aggregates and customizes resources, images, and components to deploy the service for development.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this Kustomization file
+#------------------------------------------------------------------------------------------------------
+# 1. Ensure the namespace ('example') is correct for your environment or update it if necessary.
+# 2. Add or remove resources depending on the files you need for this environment.
+# 3. Update the 'newTag' under 'images' to match the desired image version for deployment.
+# 4. Add any required patches to the 'patches' section for environment-specific overrides.
+# 5. Verify the path to components (e.g., '../../variants/dev') is accurate and includes required changes.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: example
+nameSuffix: ""
+
+resources:
+  - ../../base
+  - ./jobs/cronjob.yaml     # Include the CronJob specific to this environment
+  - ./jobs/dbupdatejob.yaml # Include the Job specific to this environment
+  - serviceaccount.yaml
+  
+components:
+  - ../../variants/dev
+
+images:
+  - name: 7689...........dkr.ecr.eu-west-2.amazonaws.com/example/template
+    newName: 7689...........dkr.ecr.eu-west-2.amazonaws.com/example/template
+    newTag: "0.0.1"
+
+patches: []

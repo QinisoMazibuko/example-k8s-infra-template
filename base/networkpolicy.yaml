@@ -1,0 +1,63 @@
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# This file defines a NetworkPolicy to control inbound and outbound traffic for the service.
+# It ensures security by restricting traffic to only necessary sources and destinations.
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this NetworkPolicy
+#------------------------------------------------------------------------------------------------------
+# 1. Replace 'template' in all occurrences with your service's name.
+# 2. Modify the ingress rules to allow traffic only from relevant pods or services.
+# 3. Update the egress rules to allow necessary outbound traffic (e.g., to external services like OpenSearch).
+# 4. Add or remove `ipBlock` entries based on your VPC's service's requirements.
+# 5. Validate that port and protocol settings align with your service's needs.
+#------------------------------------------------------------------------------------------------------
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: template
+spec:
+  podSelector:
+    matchLabels:
+      app: template
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        # Allow ingress from example-frontend pod in the same namespace
+        - podSelector:
+            matchLabels:
+              app: example-frontend
+
+  egress:
+    - to:
+        # Allow egress out to the same subnet (VPC), mainly for Opensearch
+        - ipBlock:
+            cidr: 10.5.1.0/24
+        - ipBlock:
+            cidr: 10.5.2.0/24
+        - ipBlock:
+            cidr: 10.5.3.0/24
+    - to:
+        # Allow egress out only to pods within the same template app, on port 3000 over TCP.
+        - podSelector:
+            matchLabels:
+              app: template
+      ports:
+        - protocol: TCP
+          port: 3000
+    - to:
+        # Allow egress to kube-system namespace for DNS resolution on port 53
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
