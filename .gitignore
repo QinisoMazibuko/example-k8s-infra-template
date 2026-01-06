@@ -4,6 +4,7 @@
 # Now un-exclude stuff we need
 !.git*
 !.github/*
+!README.md
 
 !base
 !base/**/
