@@ -1,7 +1,7 @@
 # infra-template
 
 This repository serves as a GitHub template for infrastructure manifests designed to integrate seamlessly with the existing example GitOps process managed by ArgoCD.
-It provides a standardized structure and files to help deploy services to the EKS cluster efficiently.
+It provides a standardized structure and files to help deploy services to an EKS cluster efficiently.
 
 ## Table of Contents
 
