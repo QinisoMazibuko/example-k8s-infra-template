@@ -7,7 +7,6 @@ It provides a standardized structure and files to help deploy services to an EKS
 
 - [Folder Structure](#folder-structure)
 - [Checklist](#checklist)
-- [Integrating with GitOps process for Deployment](#Integrating-with-GitOps-process-for-Deployment)
 
 ---
 
