@@ -1,0 +1,47 @@
+---
+name: Code Generation Guidelines
+description: Guidelines for creating and modifying Kubernetes YAML manifests
+alwaysApply: true
+globs:
+  - "**/*.yaml"
+  - "**/*.yml"
+---
+
+## YAML File Structure
+
+Every YAML manifest MUST include:
+1. A header comment block with `Purpose:` section explaining what the file does
+2. A `Checklist for developers` section with numbered action items
+3. Use `---` as document separator at the start
+
+### Header Template
+
+```yaml
+---
+#------------------------------------------------------------------------------------------------------
+#                       Purpose:
+#------------------------------------------------------------------------------------------------------
+# [Describe what this file does and its role in the deployment]
+#------------------------------------------------------------------------------------------------------
+#           Checklist for developers using this [ResourceType]
+#------------------------------------------------------------------------------------------------------
+# 1. [First action item - typically replacing 'template' placeholder]
+# 2. [Second action item - configuration specific to resource type]
+# 3. [Additional items as needed]
+#------------------------------------------------------------------------------------------------------
+```
+
+## Creating New Kubernetes Manifests
+
+When creating new Kubernetes manifests:
+1. Always start with the header comment block template above
+2. Include appropriate checklist items for the resource type
+3. Use consistent indentation (2 spaces)
+4. Reference existing files as patterns for new resources
+
+## Modifying Existing Manifests
+
+When modifying existing manifests:
+1. Preserve the header comment structure
+2. Update checklist items if adding new configurable fields
+3. Keep placeholder `template` values for reusability

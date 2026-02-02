@@ -1,0 +1,44 @@
+---
+name: Project Overview
+description: Kustomize-based Kubernetes infrastructure template for GitOps/ArgoCD deployments
+alwaysApply: true
+---
+
+# Overview
+
+## Project Context
+This is a Kustomize-based Kubernetes infrastructure template for GitOps deployments with ArgoCD.
+
+## Directory Structure
+- `base/` - Environment-agnostic Kubernetes manifests (Deployment, Service, ConfigMap, etc.)
+- `envs/{dev,test,uat}/` - Environment-specific overlays that reference base and include environment resources
+- `variants/{dev,test,uat}/` - Kustomize Components for environment-specific patches
+
+
+### Naming Conventions
+- Use `template` as placeholder for service names (to be replaced during setup)
+- File names: lowercase kebab-case (e.g., `external-secrets.yaml`, `networkpolicy.yaml`)
+- Kubernetes resource names: match the service name placeholder
+- Labels: use `app.kubernetes.io/` standard labels
+
+### Kustomization Patterns
+- Base kustomization: `apiVersion: kustomize.config.k8s.io/v1beta1`
+- Variant components: `apiVersion: kustomize.config.k8s.io/v1alpha1` with `kind: Component`
+- Environment overlays reference `../../base` and use `../../variants/{env}` as components
+
+### Security Defaults
+- Deployments MUST include security context with:
+  - `runAsNonRoot: true`
+  - `allowPrivilegeEscalation: false`
+  - `capabilities.drop: [ALL]`
+  - `seccompProfile.type: RuntimeDefault`
+- Always include `automountServiceAccountToken: false` unless needed
+
+### Secrets Management
+- Use ExternalSecrets to fetch from AWS Secrets Manager
+- Secret naming: `{service}-{env}` (e.g., `template-dev`, `template-test`)
+- Environment-specific key patches go in `envs/{env}/external-secrets-keys.yaml`
+
+### Environment Variables
+- Non-sensitive config: ConfigMap in base, patched via variants
+- Sensitive config: ExternalSecrets synced to Kubernetes Secrets

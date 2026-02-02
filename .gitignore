@@ -17,3 +17,7 @@
 !variants
 !variants/**/
 !variants/**/*.yaml
+
+!.cursor/
+!.cursor/**/
+!.cursor/**/*.mdc
